@@ -12,7 +12,7 @@
 #include "murakamimetaball.h"
 
 OpenGLScene::OpenGLScene(QWidget *parent)
-    : QOpenGLWidget(parent), m_grid(width(), height(), 16, 16), m_cursor_vao(this)
+    : QOpenGLWidget(parent), m_grid(width(), height(), 16, 16), m_cursor_vao(this), m_ms_solver(&m_grid), m_ms_threshold(0.5f)
 {
     setMouseTracking(true);
 
@@ -28,6 +28,7 @@ void OpenGLScene::mouseMoveEvent(QMouseEvent *event)
 {
     m_current_metaball->setPosition(QVector2D(event->pos()));
 
+    m_ms_solver.solve(m_ms_threshold);
     update();
 }
 
@@ -103,5 +104,4 @@ void OpenGLScene::resizeGL(int w, int h)
 
     m_grid.resize(w, h);
     m_grid.initializeGL();
-    qDebug() << "Width: " << QString::number(w) << "Height:" << QString::number(h);
 }

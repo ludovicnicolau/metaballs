@@ -23,12 +23,14 @@ public:
     inline QVector2D vertexTopRight() const noexcept;
     inline QVector2D vertexBottomLeft() const noexcept;
     inline QVector2D vertexBottomRight() const noexcept;
+    inline int value() const noexcept;
 
     void setVertices(const std::array<QVector2D, 4>& vertices) noexcept;
     inline void setVertexTopLeft(const QVector2D& vertex) noexcept;
     inline void setVertexTopRight(const QVector2D& vertex) noexcept;
     inline void setVertexBottomRight(const QVector2D& vertex) noexcept;
     inline void setVertexBottomLeft(const QVector2D& vertex) noexcept;
+    inline void setValue(int value) noexcept;
 
     void draw();
     void initializeGL();
@@ -36,6 +38,8 @@ public:
 
 private:
     std::array<QVector2D, 4> m_vertices;
+
+    int m_value; // Value used for the marching squares algorithm
 
     QOpenGLVertexArrayObject m_vao;
     QOpenGLBuffer m_vbo;
@@ -61,6 +65,11 @@ inline QVector2D Cell::vertexBottomLeft() const noexcept
     return m_vertices[3];
 }
 
+inline int Cell::value() const noexcept
+{
+    return m_value;
+}
+
 inline void Cell::setVertexTopLeft(const QVector2D& vertex) noexcept
 {
     m_vertices[0] = vertex;
@@ -79,6 +88,11 @@ inline void Cell::setVertexBottomRight(const QVector2D& vertex) noexcept
 inline void Cell::setVertexBottomLeft(const QVector2D& vertex) noexcept
 {
     m_vertices[3] = vertex;
+}
+
+inline void Cell::setValue(int value) noexcept
+{
+    m_value = value;
 }
 
 #endif // CELL_H

@@ -21,7 +21,7 @@ public:
     inline void setPosition(const QVector2D& position) noexcept;
     inline void setRadius(float radius) noexcept;
 
-    virtual bool isIn(const QVector2D& point) const = 0;
+    virtual float evaluate(const QVector2D& point) const = 0;
 
 protected:
     QVector2D m_position;

@@ -10,7 +10,7 @@ public:
 
     ~MurakamiMetaball() override = default;
 
-    bool isIn(const QVector2D& point) const override;
+    float evaluate(const QVector2D& point) const override;
 };
 
 #endif // MURAKAMIMETABALL_H

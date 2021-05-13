@@ -3,6 +3,7 @@
 
 #include <QOpenGLWidget>
 #include "grid.h"
+#include "marchingsquaressolver.h"
 
 #include <QOpenGLVertexArrayObject>
 #include <QOpenGLBuffer>
@@ -30,6 +31,9 @@ private:
     QOpenGLBuffer m_cursor_vbo;
     QMatrix4x4 m_cursor_model;
     QMatrix4x4 m_ortho_projection;
+
+    MarchingSquaresSolver m_ms_solver;
+    float m_ms_threshold;
 
     class QOpenGLShaderProgram *m_shader_program;
 

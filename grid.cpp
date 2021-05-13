@@ -17,6 +17,13 @@ unsigned int Grid::numberOfCells() const noexcept
     return m_cells.size();
 }
 
+Cell *Grid::cellAt(unsigned int index) const
+{
+    if (index < 0 || index >= m_cells.size())
+        return nullptr;
+    return m_cells[index].get();
+}
+
 void Grid::draw()
 {
     for (auto& cell : m_cells)
@@ -45,8 +52,6 @@ void Grid::resize(float width, float height)
     float colsStep = width / m_n_cols;
     float rowsStep = height / m_n_rows;
 
-    // qDebug() << "ColsStep: " << QString::number(colsStep) << "RowsStep: " << QString::number(rowsStep);
-
     float current_y = 0.f;
     for (unsigned int i = 0;i < m_n_cols;++i)
     {
@@ -60,9 +65,6 @@ void Grid::resize(float width, float height)
 
             std::unique_ptr<Cell> cell = std::make_unique<Cell>(top_left, top_right, bottom_right, bottom_left);
             m_cells.push_back(std::move(cell));
-
-
-            // qDebug() << top_left << " " << top_right << " " << bottom_right << " " << bottom_left;
 
             current_x += colsStep;
         }

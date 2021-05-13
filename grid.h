@@ -16,6 +16,7 @@ public:
     ~Grid();
 
     unsigned int numberOfCells() const noexcept;
+    Cell* cellAt(unsigned int index) const;
     // Cell cellAt(unsigned int col, unsigned int row) const;
 
     void draw();
