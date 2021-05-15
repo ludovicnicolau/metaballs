@@ -17,7 +17,7 @@ public:
     inline void setGrid(Grid *grid);
 
     void addMetaball(AbstractMetaball *metaball);
-    void solve(float threshold);
+    QVector<float> solve(float threshold);
 
 
 private:

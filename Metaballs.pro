@@ -11,6 +11,7 @@ CONFIG += c++11
 SOURCES += \
     abstractmetaball.cpp \
     cell.cpp \
+    circle.cpp \
     grid.cpp \
     main.cpp \
     mainwindow.cpp \
@@ -21,6 +22,7 @@ SOURCES += \
 HEADERS += \
     abstractmetaball.h \
     cell.h \
+    circle.h \
     grid.h \
     mainwindow.h \
     marchingsquaressolver.h \

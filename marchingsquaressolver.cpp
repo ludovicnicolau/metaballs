@@ -3,6 +3,8 @@
 #include "abstractmetaball.h"
 #include "grid.h"
 
+#include <QDebug>
+
 MarchingSquaresSolver::MarchingSquaresSolver(Grid *grid)
     : m_grid(grid)
 {
@@ -14,7 +16,7 @@ void MarchingSquaresSolver::addMetaball(AbstractMetaball *metaball)
     m_metaballs.push_back(metaball);
 }
 
-void MarchingSquaresSolver::solve(float threshold)
+QVector<float> MarchingSquaresSolver::solve(float threshold)
 {
     QVector<float> vector;
 
@@ -25,20 +27,20 @@ void MarchingSquaresSolver::solve(float threshold)
     {
         Cell *cell = m_grid->cellAt(i);
         calculateCellValue(cell, threshold, resulting_vertices);
-
-
-
     }
+    return resulting_vertices;
 }
 
 void MarchingSquaresSolver::calculateCellValue(Cell * const cell, float threshold, QVector<float> &resulting_vertices) const
 {
     short isIn = 0x0;
+    std::array<float, 4> values;
 
     std::array<QVector2D, 4> vertices = cell->vertices();
     for (int i = 0;i < 4;++i)
     {
         float f = calculateVertexValue(vertices[i]);
+        values[i] = f;
         if (f >= threshold)
         {
             isIn |= 0x1 << i;
@@ -47,10 +49,13 @@ void MarchingSquaresSolver::calculateCellValue(Cell * const cell, float threshol
 
     for (int i = 0;i < 4;++i)
     {
-        bool inOut = ((isIn & 0x1 << i) && !(isIn & 0x1 << (i+1%4))) || (!(isIn & 0x1 << i) && (isIn & 0x1 << (i+1%4)));
+        bool inOut = ((isIn & 0x1 << i) && !(isIn & 0x1 << ((i+1)%4))) || (!(isIn & 0x1 << i) && (isIn & 0x1 << ((i+1)%4)));
         if (inOut)
         {
-            QVector2D vertex = (vertices[i] + vertices[(i+1)%4]) / 2.0f;
+            QVector2D p1 = vertices[i];
+            QVector2D p2 = vertices[(i+1)%4];
+            float d = (threshold - values[i]) / (values[(i+1)%4] - values[i]);
+            QVector2D vertex = (1.f - d) * p1 + d * p2;
             resulting_vertices.push_back(vertex.x());
             resulting_vertices.push_back(vertex.y());
         }

@@ -4,6 +4,7 @@
 #include <QOpenGLWidget>
 #include "grid.h"
 #include "marchingsquaressolver.h"
+#include "circle.h"
 
 #include <QOpenGLVertexArrayObject>
 #include <QOpenGLBuffer>
@@ -18,14 +19,25 @@ public:
 
     ~OpenGLScene();
 
+public slots:
+    void setGridVisible(bool isVisible);
+    void setThreshold(float threshold);
+
 protected:
     void mouseMoveEvent(class QMouseEvent *event) override;
+    void mousePressEvent(class QMouseEvent *event) override;
     void initializeGL() override;
     void paintGL() override;
     void resizeGL(int w, int h) override;
 
 private:
+    void initializeGLSurfaceBuffers();
+    void updateSurfaceBuffers(const QVector<float> &vertices);
+    void paintGLSurface();
+    void evaluateMarchingSquares();
+
     Grid m_grid;
+    bool m_is_grid_visible;
 
     QOpenGLVertexArrayObject m_cursor_vao;
     QOpenGLBuffer m_cursor_vbo;
@@ -35,9 +47,15 @@ private:
     MarchingSquaresSolver m_ms_solver;
     float m_ms_threshold;
 
+    QOpenGLVertexArrayObject m_surface_vao;
+    QOpenGLBuffer m_surface_vbo;
+    unsigned int m_n_vertices_on_surface;
+
     class QOpenGLShaderProgram *m_shader_program;
 
     class AbstractMetaball *m_current_metaball;
+
+    Circle m_circle;
 };
 
 #endif // OPENGLSCENE_H

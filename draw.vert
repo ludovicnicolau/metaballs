@@ -9,5 +9,5 @@ void main()
 {
     gl_Position = P * M * vec4(in_pos, 0.0f ,1.0f);
 
-    gl_PointSize = 1.0f;
+    gl_PointSize = 3.0f;
 }

@@ -15,6 +15,10 @@ public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
 
+private slots:
+    void onCheckBoxShowGridStateChanged(int state);
+    void onSliderThresholdValueChanged(int value);
+
 private:
     Ui::MainWindow *ui;
 };
