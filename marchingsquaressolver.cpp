@@ -59,27 +59,6 @@ void MarchingSquaresSolver::calculateCellValue(Cell * const cell, float threshol
     }
 }
 
-/*void MarchingSquaresSolver::calculateCellValue(Cell * const cell, float threshold) const
-{
-    int value = 0;
-    float f = 0.f;
-
-    f = calculateVertexValue(cell->vertexBottomLeft());
-    if (f >= threshold)
-        value |= 0x1;
-    f = calculateVertexValue(cell->vertexBottomRight());
-    if (f >= threshold)
-        value |= 0x1 << 1;
-    f = calculateVertexValue(cell->vertexTopRight());
-    if (f >= threshold)
-        value |= 0x1 << 2;
-    f = calculateVertexValue(cell->vertexTopLeft());
-    if (f >= threshold)
-        value |= 0x1 << 3;
-
-    cell->setValue(value);
-}*/
-
 float MarchingSquaresSolver::calculateVertexValue(const QVector2D &vertex, const QVector<AbstractMetaball*>& metaballs) const
 {
     unsigned int nMetaballs = metaballs.size();

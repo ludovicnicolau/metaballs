@@ -5,7 +5,7 @@
 #include <QVector>
 #include "cell.h"
 
-#include <memory.h>
+#include <memory>
 #include <vector>
 
 class Grid : public QObject

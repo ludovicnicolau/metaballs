@@ -12,7 +12,7 @@
 #include "murakamimetaball.h"
 
 OpenGLScene::OpenGLScene(QWidget *parent)
-    : QOpenGLWidget(parent), m_grid(width(), height(), 32, 32),  m_is_grid_visible(false),
+    : QOpenGLWidget(parent), m_grid(width(), height(), 45, 45),  m_is_grid_visible(false),
       m_cursor_vao(this), m_ms_solver(&m_grid), m_ms_threshold(0.5f),
       m_n_vertices_on_surface(0)
 {
@@ -108,6 +108,8 @@ void OpenGLScene::initializeGL()
 
     initializeGLSurfaceBuffers();
 
+    glClearColor(.23f, .23f, .23f, 1.f);
+
 }
 
 void OpenGLScene::paintGL()
@@ -135,13 +137,14 @@ void OpenGLScene::paintGL()
     m_shader_program->setUniformValue(m_shader_program->uniformLocation("M"), m_cursor_model);
 
 
-    m_shader_program->setUniformValue(m_shader_program->uniformLocation("color"), QVector4D(1.f, 0.f, 0.f, 1.f));
+    /*m_shader_program->setUniformValue(m_shader_program->uniformLocation("color"), QVector4D(1.f, 0.f, 0.f, 1.f));
     m_cursor_vao.bind();
     glDrawArrays(GL_POINTS, 0, 1);
-    m_cursor_vao.release();
+    m_cursor_vao.release();*/
 
     m_shader_program->setUniformValue(m_shader_program->uniformLocation("color"), QVector4D(0.f, 0.f, 1.f, 1.f));
     m_circle.draw();
+
 }
 
 void OpenGLScene::resizeGL(int w, int h)
@@ -173,16 +176,15 @@ void OpenGLScene::updateSurfaceBuffers(const QVector<float> &vertices)
 {
     m_surface_vao.bind();
     m_surface_vbo.bind();
-    glBufferSubData(GL_ARRAY_BUFFER, 0, 4 * 2 * sizeof(float) * vertices.size(), vertices.data());
+    glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(float) * vertices.size(), vertices.data());
     m_surface_vao.release();
     m_surface_vbo.release();
 }
 
 void OpenGLScene::paintGLSurface()
 {
-    qDebug() << m_n_vertices_on_surface;
     m_surface_vao.bind();
-    glDrawArrays(GL_LINES, 0, m_n_vertices_on_surface);
+    glDrawArrays(GL_LINES, 0, m_n_vertices_on_surface * 0.5);
     m_surface_vao.release();
 }
 
