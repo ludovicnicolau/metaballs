@@ -19,12 +19,13 @@ OpenGLScene::OpenGLScene(QWidget *parent)
     setMouseTracking(true);
 
     m_current_metaball = new MurakamiMetaball(QVector2D(0.f, 0.f), 100.0f);
-    m_ms_solver.addMetaball(m_current_metaball);
+    m_metaballs.push_back(m_current_metaball);
 }
 
 OpenGLScene::~OpenGLScene()
 {
-    delete m_current_metaball;
+    for (int i = 0;i < m_metaballs.size();++i)
+        delete m_metaballs[i];
 
     makeCurrent();
 
@@ -45,7 +46,7 @@ void OpenGLScene::setThreshold(float threshold)
 {
     m_ms_threshold = threshold;
     evaluateMarchingSquares();
-    qDebug() << m_ms_threshold;
+    update();
 }
 
 void OpenGLScene::mouseMoveEvent(QMouseEvent *event)
@@ -60,7 +61,8 @@ void OpenGLScene::mousePressEvent(QMouseEvent *event)
 {
     if (event->button() == Qt::MouseButton::LeftButton)
     {
-
+        m_current_metaball = new MurakamiMetaball(QVector2D(event->pos()), m_current_metaball->radius());
+        m_metaballs.push_back(m_current_metaball);
     }
 }
 
@@ -178,6 +180,7 @@ void OpenGLScene::updateSurfaceBuffers(const QVector<float> &vertices)
 
 void OpenGLScene::paintGLSurface()
 {
+    qDebug() << m_n_vertices_on_surface;
     m_surface_vao.bind();
     glDrawArrays(GL_LINES, 0, m_n_vertices_on_surface);
     m_surface_vao.release();
@@ -185,7 +188,7 @@ void OpenGLScene::paintGLSurface()
 
 void OpenGLScene::evaluateMarchingSquares()
 {
-    QVector<float> vertices = m_ms_solver.solve(m_ms_threshold);
+    QVector<float> vertices = m_ms_solver.solve(m_ms_threshold, m_metaballs);
     m_n_vertices_on_surface = vertices.size();
     updateSurfaceBuffers(vertices);
 }

@@ -11,12 +11,7 @@ MarchingSquaresSolver::MarchingSquaresSolver(Grid *grid)
 
 }
 
-void MarchingSquaresSolver::addMetaball(AbstractMetaball *metaball)
-{
-    m_metaballs.push_back(metaball);
-}
-
-QVector<float> MarchingSquaresSolver::solve(float threshold)
+QVector<float> MarchingSquaresSolver::solve(float threshold, const QVector<AbstractMetaball*>& metaballs)
 {
     QVector<float> vector;
 
@@ -26,12 +21,14 @@ QVector<float> MarchingSquaresSolver::solve(float threshold)
     for (unsigned int i = 0;i < nCells;++i)
     {
         Cell *cell = m_grid->cellAt(i);
-        calculateCellValue(cell, threshold, resulting_vertices);
+        calculateCellValue(cell, threshold, resulting_vertices, metaballs);
     }
     return resulting_vertices;
 }
 
-void MarchingSquaresSolver::calculateCellValue(Cell * const cell, float threshold, QVector<float> &resulting_vertices) const
+void MarchingSquaresSolver::calculateCellValue(Cell * const cell, float threshold,
+                                               QVector<float> &resulting_vertices,
+                                               const QVector<AbstractMetaball*>& metaballs) const
 {
     short isIn = 0x0;
     std::array<float, 4> values;
@@ -39,7 +36,7 @@ void MarchingSquaresSolver::calculateCellValue(Cell * const cell, float threshol
     std::array<QVector2D, 4> vertices = cell->vertices();
     for (int i = 0;i < 4;++i)
     {
-        float f = calculateVertexValue(vertices[i]);
+        float f = calculateVertexValue(vertices[i], metaballs);
         values[i] = f;
         if (f >= threshold)
         {
@@ -83,13 +80,13 @@ void MarchingSquaresSolver::calculateCellValue(Cell * const cell, float threshol
     cell->setValue(value);
 }*/
 
-float MarchingSquaresSolver::calculateVertexValue(const QVector2D &vertex) const
+float MarchingSquaresSolver::calculateVertexValue(const QVector2D &vertex, const QVector<AbstractMetaball*>& metaballs) const
 {
-    unsigned int nMetaballs = m_metaballs.size();
+    unsigned int nMetaballs = metaballs.size();
     float value = 0.f;
     for (unsigned int j = 0; j< nMetaballs;++j)
     {
-        AbstractMetaball *metaball = m_metaballs[j];
+        AbstractMetaball *metaball = metaballs[j];
         value += metaball->evaluate(vertex);
     }
     return value;

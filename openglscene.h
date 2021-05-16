@@ -55,6 +55,8 @@ private:
 
     class AbstractMetaball *m_current_metaball;
 
+    QVector<class AbstractMetaball*> m_metaballs; // The last metaball in this Vector = m_current_metaball
+
     Circle m_circle;
 };
 

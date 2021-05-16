@@ -17,8 +17,7 @@ SOURCES += \
     mainwindow.cpp \
     marchingsquaressolver.cpp \
     murakamimetaball.cpp \
-    openglscene.cpp \
-    primitiveslistmodel.cpp
+    openglscene.cpp
 
 HEADERS += \
     abstractmetaball.h \
@@ -28,8 +27,7 @@ HEADERS += \
     mainwindow.h \
     marchingsquaressolver.h \
     murakamimetaball.h \
-    openglscene.h \
-    primitiveslistmodel.h
+    openglscene.h
 
 FORMS += \
     mainwindow.ui

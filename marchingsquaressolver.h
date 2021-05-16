@@ -15,19 +15,17 @@ public:
     MarchingSquaresSolver(Grid *grid);
 
     inline void setGrid(Grid *grid);
-
-    void addMetaball(AbstractMetaball *metaball);
-    QVector<float> solve(float threshold);
+    QVector<float> solve(float threshold, const QVector<AbstractMetaball*>& metaballs);
 
 
 private:
     // void calculateCellValue(Cell * const cell, float threshold) const;
-    void calculateCellValue(Cell * const cell, float threshold, QVector<float>& resulting_vertices) const;
-    float calculateVertexValue(const QVector2D &vertex) const;
+    void calculateCellValue(Cell * const cell, float threshold,
+                            QVector<float>& resulting_vertices,
+                            const QVector<AbstractMetaball*>& metaballs) const;
+    float calculateVertexValue(const QVector2D &vertex, const QVector<AbstractMetaball*>& metaballs) const;
 
     Grid *m_grid;
-    QVector<AbstractMetaball*> m_metaballs;
-
 };
 
 inline void MarchingSquaresSolver::setGrid(Grid *grid)
