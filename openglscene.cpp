@@ -9,8 +9,6 @@
 
 #include <QMatrix4x4>
 
-#include "murakamimetaball.h"
-
 OpenGLScene::OpenGLScene(QWidget *parent)
     : QOpenGLWidget(parent), m_grid(width(), height(), 45, 45),  m_is_grid_visible(false),
       m_cursor_vao(this), m_ms_solver(&m_grid), m_ms_threshold(0.5f),
@@ -42,11 +40,23 @@ void OpenGLScene::setGridVisible(bool isVisible)
     update();
 }
 
+void OpenGLScene::setCurrentMetaballRadius(float radius)
+{
+    m_current_metaball->setRadius(radius);
+    evaluateMarchingSquares();
+    update();
+}
+
 void OpenGLScene::setThreshold(float threshold)
 {
     m_ms_threshold = threshold;
     evaluateMarchingSquares();
     update();
+}
+
+void OpenGLScene::setOperation(int operation)
+{
+    m_current_metaball->setOperation(static_cast<AbstractMetaballOperation>(operation));
 }
 
 void OpenGLScene::mouseMoveEvent(QMouseEvent *event)
@@ -62,6 +72,7 @@ void OpenGLScene::mousePressEvent(QMouseEvent *event)
     if (event->button() == Qt::MouseButton::LeftButton)
     {
         m_current_metaball = new MurakamiMetaball(QVector2D(event->pos()), m_current_metaball->radius());
+        m_current_metaball->setOperation(m_metaballs[m_metaballs.size()-1]->operation());
         m_metaballs.push_back(m_current_metaball);
     }
 }
@@ -89,8 +100,8 @@ void OpenGLScene::initializeGL()
     m_cursor_vbo.release();
 
     m_shader_program = new QOpenGLShaderProgram(this);
-    m_shader_program->addShaderFromSourceFile(QOpenGLShader::Vertex, "../draw.vert");
-    m_shader_program->addShaderFromSourceFile(QOpenGLShader::Fragment, "../draw.frag");
+    m_shader_program->addShaderFromSourceFile(QOpenGLShader::Vertex, ":/shaders/draw.vert");
+    m_shader_program->addShaderFromSourceFile(QOpenGLShader::Fragment, ":/shaders/draw.frag");
     m_shader_program->link();
 
     m_shader_program->bind();
@@ -109,7 +120,6 @@ void OpenGLScene::initializeGL()
     initializeGLSurfaceBuffers();
 
     glClearColor(.23f, .23f, .23f, 1.f);
-
 }
 
 void OpenGLScene::paintGL()
@@ -137,10 +147,10 @@ void OpenGLScene::paintGL()
     m_shader_program->setUniformValue(m_shader_program->uniformLocation("M"), m_cursor_model);
 
 
-    /*m_shader_program->setUniformValue(m_shader_program->uniformLocation("color"), QVector4D(1.f, 0.f, 0.f, 1.f));
+    m_shader_program->setUniformValue(m_shader_program->uniformLocation("color"), QVector4D(1.f, 0.f, 0.f, 1.f));
     m_cursor_vao.bind();
     glDrawArrays(GL_POINTS, 0, 1);
-    m_cursor_vao.release();*/
+    m_cursor_vao.release();
 
     m_shader_program->setUniformValue(m_shader_program->uniformLocation("color"), QVector4D(0.f, 0.f, 1.f, 1.f));
     m_circle.draw();

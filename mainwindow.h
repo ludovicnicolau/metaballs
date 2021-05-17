@@ -18,6 +18,7 @@ public:
 private slots:
     void onCheckBoxShowGridStateChanged(int state);
     void onSliderThresholdValueChanged(int value);
+    void onSliderRadiusValueChanged(int value);
 
 private:
     Ui::MainWindow *ui;

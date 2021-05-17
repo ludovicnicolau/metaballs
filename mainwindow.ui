@@ -67,6 +67,15 @@
             <height>0</height>
            </size>
           </property>
+          <property name="minimum">
+           <number>10</number>
+          </property>
+          <property name="maximum">
+           <number>200</number>
+          </property>
+          <property name="value">
+           <number>100</number>
+          </property>
           <property name="orientation">
            <enum>Qt::Horizontal</enum>
           </property>
@@ -103,6 +112,20 @@
          </widget>
         </item>
         <item>
+         <widget class="QComboBox" name="comboBox_operations">
+          <item>
+           <property name="text">
+            <string>Blend</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>Difference</string>
+           </property>
+          </item>
+         </widget>
+        </item>
+        <item>
          <spacer name="verticalSpacer">
           <property name="orientation">
            <enum>Qt::Vertical</enum>
@@ -119,14 +142,7 @@
          </spacer>
         </item>
         <item>
-         <widget class="QListView" name="listView_metaballs">
-          <property name="maximumSize">
-           <size>
-            <width>16777215</width>
-            <height>16777215</height>
-           </size>
-          </property>
-         </widget>
+         <widget class="QListWidget" name="listWidget"/>
         </item>
        </layout>
       </widget>

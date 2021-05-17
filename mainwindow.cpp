@@ -13,6 +13,8 @@ MainWindow::MainWindow(QWidget *parent)
     ui->splitter->setSizes(QList<int>() << 100 << 300);
     connect(ui->checkBox_show_grid, SIGNAL(stateChanged(int)), this, SLOT(onCheckBoxShowGridStateChanged(int)));
     connect(ui->hSlider_threshold, SIGNAL(valueChanged(int)), this, SLOT(onSliderThresholdValueChanged(int)));
+    connect(ui->hSlider_radius, SIGNAL(valueChanged(int)), this, SLOT(onSliderRadiusValueChanged(int)));
+    connect(ui->comboBox_operations, SIGNAL(currentIndexChanged(int)), ui->openGLWidget, SLOT(setOperation(int)));
 }
 
 MainWindow::~MainWindow()
@@ -35,5 +37,10 @@ void MainWindow::onCheckBoxShowGridStateChanged(int state)
 void MainWindow::onSliderThresholdValueChanged(int value)
 {
     ui->openGLWidget->setThreshold(value / 10.0f);
+}
+
+void MainWindow::onSliderRadiusValueChanged(int value)
+{
+    ui->openGLWidget->setCurrentMetaballRadius(value);
 }
 

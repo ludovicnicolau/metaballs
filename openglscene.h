@@ -4,6 +4,8 @@
 #include <QOpenGLWidget>
 #include "grid.h"
 #include "marchingsquaressolver.h"
+
+#include "murakamimetaball.h"
 #include "circle.h"
 
 #include <QOpenGLVertexArrayObject>
@@ -21,7 +23,9 @@ public:
 
 public slots:
     void setGridVisible(bool isVisible);
+    void setCurrentMetaballRadius(float radius);
     void setThreshold(float threshold);
+    void setOperation(int operation);
 
 protected:
     void mouseMoveEvent(class QMouseEvent *event) override;

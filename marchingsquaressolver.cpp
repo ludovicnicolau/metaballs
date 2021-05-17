@@ -67,6 +67,7 @@ float MarchingSquaresSolver::calculateVertexValue(const QVector2D &vertex, const
     {
         AbstractMetaball *metaball = metaballs[j];
         value += metaball->evaluate(vertex);
+        value = qBound(0.f, value, 1.f);
     }
     return value;
 }
