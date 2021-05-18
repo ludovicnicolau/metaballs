@@ -2,16 +2,19 @@
 #define OPENGLSCENE_H
 
 #include <QOpenGLWidget>
+
+#include "circle.h"
 #include "grid.h"
 #include "marchingsquaressolver.h"
-
 #include "murakamimetaball.h"
-#include "circle.h"
 
+#include <QMatrix4x4>
+#include <QModelIndex>
 #include <QOpenGLVertexArrayObject>
 #include <QOpenGLBuffer>
 #include <QOpenGLFunctions>
-#include <QMatrix4x4>
+
+class MetaballsListModel;
 
 class OpenGLScene : public QOpenGLWidget, protected QOpenGLFunctions
 {
@@ -21,11 +24,17 @@ public:
 
     ~OpenGLScene();
 
+    void setMetaballsListModel(MetaballsListModel *model);
+
 public slots:
     void setGridVisible(bool isVisible);
     void setCurrentMetaballRadius(float radius);
     void setThreshold(float threshold);
     void setOperation(int operation);
+    void setSelectedItemInListView(const QModelIndex &current, const QModelIndex &previous);
+
+private slots:
+    void onRowsRemoved(const QModelIndex &, int, int);
 
 protected:
     void mouseMoveEvent(class QMouseEvent *event) override;
@@ -62,6 +71,10 @@ private:
     QVector<class AbstractMetaball*> m_metaballs; // The last metaball in this Vector = m_current_metaball
 
     Circle m_circle;
+
+    MetaballsListModel *m_metaballs_list_model;
+
+    QModelIndex m_current_selected_metaball;
 };
 
 #endif // OPENGLSCENE_H

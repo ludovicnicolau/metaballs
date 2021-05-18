@@ -16,6 +16,7 @@ SOURCES += \
     main.cpp \
     mainwindow.cpp \
     marchingsquaressolver.cpp \
+    metaballslistmodel.cpp \
     murakamimetaball.cpp \
     openglscene.cpp
 
@@ -26,6 +27,7 @@ HEADERS += \
     grid.h \
     mainwindow.h \
     marchingsquaressolver.h \
+    metaballslistmodel.h \
     murakamimetaball.h \
     openglscene.h
 

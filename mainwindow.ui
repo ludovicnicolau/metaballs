@@ -142,7 +142,7 @@
          </spacer>
         </item>
         <item>
-         <widget class="QListWidget" name="listWidget"/>
+         <widget class="QListView" name="listView_metaballs"/>
         </item>
        </layout>
       </widget>
