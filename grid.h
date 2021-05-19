@@ -8,6 +8,9 @@
 #include <memory>
 #include <vector>
 
+#include <QOpenGLVertexArrayObject>
+#include <QOpenGLBuffer>
+
 class Grid : public QObject
 {
     Q_OBJECT
@@ -16,14 +19,15 @@ public:
     ~Grid();
 
     unsigned int numberOfCells() const noexcept;
+    inline unsigned int numCols() const noexcept;
+    inline unsigned int numRows() const noexcept;
     Cell* cellAt(unsigned int index) const;
-    // Cell cellAt(unsigned int col, unsigned int row) const;
 
     void draw();
     void initializeGL();
 
 public slots:
-    void resize(float width, float height);
+    void resize(float width, float height, unsigned int nCols, unsigned int nRows);
 
 
 private:
@@ -34,9 +38,20 @@ private:
 
     std::vector<std::unique_ptr<Cell>> m_cells;
 
-    /*QOpenGLVertexArrayObject m_vao;
+    QOpenGLVertexArrayObject m_vao;
     QOpenGLBuffer m_vbo;
-    QOpenGLBuffer m_ebo;*/
+
+    unsigned int m_n_vertices;
 };
+
+inline unsigned int Grid::numCols() const noexcept
+{
+    return m_n_cols;
+}
+
+inline unsigned int Grid::numRows() const noexcept
+{
+    return m_n_rows;
+}
 
 #endif // GRID_H

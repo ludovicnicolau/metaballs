@@ -27,6 +27,9 @@ MainWindow::MainWindow(QWidget *parent)
     connect(ui->listView_metaballs->selectionModel(), SIGNAL(currentChanged(const QModelIndex&, const QModelIndex&)),
             ui->openGLWidget, SLOT(setSelectedItemInListView(const QModelIndex&, const QModelIndex&)));
 
+    connect(ui->spinBox_columns, SIGNAL(valueChanged(int)), this, SLOT(onNColsSpinBoxValueChanged(int)));
+    connect(ui->spinBox_rows, SIGNAL(valueChanged(int)), this, SLOT(onNRowsSpinBoxValueChanged(int)));
+
 
     new QShortcut(QKeySequence(QKeySequence::Delete), this, SLOT(deleteItem()));
 }
@@ -62,5 +65,15 @@ void MainWindow::deleteItem()
 {
     ui->listView_metaballs->model()->removeRow(ui->listView_metaballs->currentIndex().row());
     ui->listView_metaballs->selectionModel()->setCurrentIndex(QModelIndex(), QItemSelectionModel::SelectionFlag::Clear);
+}
+
+void MainWindow::onNColsSpinBoxValueChanged(int value)
+{
+    ui->openGLWidget->resizeGrid(value, ui->spinBox_rows->value());
+}
+
+void MainWindow::onNRowsSpinBoxValueChanged(int value)
+{
+    ui->openGLWidget->resizeGrid(ui->spinBox_columns->value(), value);
 }
 

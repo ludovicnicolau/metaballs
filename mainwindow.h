@@ -22,6 +22,9 @@ private slots:
     void onSliderRadiusValueChanged(int value);
     void deleteItem();
 
+    void onNColsSpinBoxValueChanged(int value);
+    void onNRowsSpinBoxValueChanged(int value);
+
 private:
     Ui::MainWindow *ui;
 

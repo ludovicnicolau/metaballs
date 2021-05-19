@@ -33,12 +33,15 @@ public slots:
     void setOperation(int operation);
     void setSelectedItemInListView(const QModelIndex &current, const QModelIndex &previous);
 
+    void resizeGrid(unsigned int nCols, unsigned int nRows);
+
 private slots:
     void onRowsRemoved(const QModelIndex &, int, int);
 
 protected:
     void mouseMoveEvent(class QMouseEvent *event) override;
     void mousePressEvent(class QMouseEvent *event) override;
+    void leaveEvent(class QEvent *event) override;
     void initializeGL() override;
     void paintGL() override;
     void resizeGL(int w, int h) override;
@@ -67,8 +70,6 @@ private:
     class QOpenGLShaderProgram *m_shader_program;
 
     class AbstractMetaball *m_current_metaball;
-
-    QVector<class AbstractMetaball*> m_metaballs; // The last metaball in this Vector = m_current_metaball
 
     Circle m_circle;
 

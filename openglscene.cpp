@@ -12,7 +12,7 @@
 #include <QMatrix4x4>
 
 OpenGLScene::OpenGLScene(QWidget *parent)
-    : QOpenGLWidget(parent), m_grid(width(), height(), 45, 45),  m_is_grid_visible(false),
+    : QOpenGLWidget(parent), m_grid(width(), height(), 40, 40),  m_is_grid_visible(false),
       m_cursor_vao(this), m_ms_solver(&m_grid), m_ms_threshold(0.5f),
       m_n_vertices_on_surface(0)
 {
@@ -21,9 +21,6 @@ OpenGLScene::OpenGLScene(QWidget *parent)
 
 OpenGLScene::~OpenGLScene()
 {
-    for (int i = 0;i < m_metaballs.size();++i)
-        delete m_metaballs[i];
-
     makeCurrent();
 
     m_cursor_vbo.destroy();
@@ -75,6 +72,15 @@ void OpenGLScene::setSelectedItemInListView(const QModelIndex &current, const QM
     update();
 }
 
+void OpenGLScene::resizeGrid(unsigned int nCols, unsigned int nRows)
+{
+    makeCurrent();
+    m_grid.resize(width(), height(), nCols, nRows);
+    m_grid.initializeGL();
+    evaluateMarchingSquares();
+    update();
+}
+
 void OpenGLScene::onRowsRemoved(const QModelIndex &, int, int)
 {
     evaluateMarchingSquares();
@@ -99,6 +105,12 @@ void OpenGLScene::mousePressEvent(QMouseEvent *event)
 
         m_metaballs_list_model->addMetaball(previous);
     }
+}
+
+void OpenGLScene::leaveEvent(QEvent *)
+{
+    evaluateMarchingSquares();
+    update();
 }
 
 void OpenGLScene::initializeGL()
@@ -132,10 +144,6 @@ void OpenGLScene::initializeGL()
     m_ortho_projection.ortho(0.0, width(), height(), 0.0, -.1f, 1.0f);
     m_shader_program->setUniformValue(m_shader_program->uniformLocation("P"), m_ortho_projection);
 
-    m_cursor_model.translate(15.0, 15.0);
-    m_shader_program->setUniformValue(m_shader_program->uniformLocation("M"), m_cursor_model);
-
-
     m_grid.initializeGL();
     m_circle.initializeGL();
 
@@ -164,20 +172,23 @@ void OpenGLScene::paintGL()
     paintGLSurface();
 
     // Draw cursor
-    m_cursor_model.setToIdentity();
-    QVector2D position = m_current_metaball->position();
-    m_cursor_model.translate(position.x(), position.y());
-    m_cursor_model.scale(m_current_metaball->radius(), m_current_metaball->radius());
-    m_shader_program->setUniformValue(m_shader_program->uniformLocation("M"), m_cursor_model);
+    if (underMouse())
+    {
+        m_cursor_model.setToIdentity();
+        QVector2D position = m_current_metaball->position();
+        m_cursor_model.translate(position.x(), position.y());
+        m_cursor_model.scale(m_current_metaball->radius(), m_current_metaball->radius());
+        m_shader_program->setUniformValue(m_shader_program->uniformLocation("M"), m_cursor_model);
 
-    m_shader_program->setUniformValue(m_shader_program->uniformLocation("color"), QVector4D(1.f, 0.f, 0.f, 1.f));
-    m_cursor_vao.bind();
-    glDrawArrays(GL_POINTS, 0, 1);
+        m_shader_program->setUniformValue(m_shader_program->uniformLocation("color"), QVector4D(1.f, 0.f, 0.f, 1.f));
+        m_cursor_vao.bind();
+        glDrawArrays(GL_POINTS, 0, 1);
 
-    m_cursor_vao.release();
+        m_cursor_vao.release();
 
-    m_shader_program->setUniformValue(m_shader_program->uniformLocation("color"), QVector4D(0.f, 0.f, 1.f, 1.f));
-    m_circle.draw();
+        m_shader_program->setUniformValue(m_shader_program->uniformLocation("color"), QVector4D(0.f, 0.f, 1.f, 1.f));
+        m_circle.draw();
+    }
 
     if (m_current_selected_metaball.isValid())
     {
@@ -185,9 +196,9 @@ void OpenGLScene::paintGL()
         if (m)
         {
             m_cursor_model.setToIdentity();
-            position = m->position();
+            QVector2D position = m->position();
             m_cursor_model.translate(position.x(), position.y());
-            m_cursor_model.scale(m_current_metaball->radius(), m_current_metaball->radius());
+            m_cursor_model.scale(m->radius(), m->radius());
             m_shader_program->setUniformValue(m_shader_program->uniformLocation("M"), m_cursor_model);
             m_shader_program->setUniformValue(m_shader_program->uniformLocation("color"), QVector4D(1.f, .6f, .0f, 1.f));
             m_circle.draw();
@@ -204,7 +215,7 @@ void OpenGLScene::resizeGL(int w, int h)
     m_ortho_projection.ortho(0.0, w, h, 0.0, -.1f, .1f);
     m_shader_program->setUniformValue(m_shader_program->uniformLocation("P"), m_ortho_projection);
 
-    m_grid.resize(w, h);
+    m_grid.resize(w, h, m_grid.numCols(), m_grid.numRows());
     m_grid.initializeGL();
 }
 
@@ -242,7 +253,8 @@ void OpenGLScene::paintGLSurface()
 void OpenGLScene::evaluateMarchingSquares()
 {
     QVector<AbstractMetaball*> metaballs = m_metaballs_list_model->metaballs();
-    metaballs.push_back(m_current_metaball);
+    if (underMouse())
+        metaballs.push_back(m_current_metaball);
     QVector<float> vertices = m_ms_solver.solve(m_ms_threshold, metaballs);
     m_n_vertices_on_surface = vertices.size();
     updateSurfaceBuffers(vertices);
